@@ -1,25 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import './styles/login.css';
 
 function App() {
+  const [showUsers, setShowUsers] = useState(false);
+
+  const logMessage = () => {
+    setShowUsers(true);
+    console.log('Is shown', showUsers);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div>
+    {!showUsers ? (
+      <div className="app-background">
+        <div className=" background">
+          <div className="form-card">
+            <h1 className="form-title">
+                Welcome
+            </h1>
+            <div className="form-subtitle">
+              Enter your name to get started
+            </div>
+            <div className="auth">
+                <div className="auth-label">Username</div>
+                <div>
+                <input 
+                  className="auth-input" 
+                  name="username" 
+                  type='text'  
+                  placeholder='type username' />
+                </div>
+                <button className="auth-button" type="submit" onClick={logMessage}>Enter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      ):(
+        <div>Hello</div>
+    )}
+  </div>
   );
 }
 
