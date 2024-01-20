@@ -1,46 +1,18 @@
-import React, { useState } from 'react';
-import './styles/App.css';
+import React from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import LogIn from './components/LogIn';
+import UserList from './components/UserList';
 import './styles/login.css';
 
-function App() {
-  const [showUsers, setShowUsers] = useState(false);
-
-  const logMessage = () => {
-    setShowUsers(true);
-    console.log('Is shown', showUsers);
-  }
-
+const App: React.FC = () => {
   return (
-    <div>
-    {!showUsers ? (
-      <div className="app-background">
-        <div className=" background">
-          <div className="form-card">
-            <h1 className="form-title">
-                Welcome
-            </h1>
-            <div className="form-subtitle">
-              Enter your name to get started
-            </div>
-            <div className="auth">
-                <div className="auth-label">Username</div>
-                <div>
-                <input 
-                  className="auth-input" 
-                  name="username" 
-                  type='text'  
-                  placeholder='type username' />
-                </div>
-                <button className="auth-button" type="submit" onClick={logMessage}>Enter</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      ):(
-        <div>Hello</div>
-    )}
-  </div>
+    <Router>
+      <Routes>
+        <Route path="/user-list" element={<UserList />} />
+        <Route path="/" element={<LogIn />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
