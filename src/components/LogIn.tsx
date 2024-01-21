@@ -1,14 +1,14 @@
-// src/components/LogIn.tsx
-
-import React, { useState } from 'react';
+// 'Log in' page for the authentication
+import React, { FormEvent, useContext, useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { authenticate } from '../authService';
+import { AuthContext } from '../authService';
 
-const LogIn: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+const LogIn = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
+  const { auth } = useContext(AuthContext); // Access auth from context
   const navigate = useNavigate();
 
   const ShowLogin =(value: boolean)=> {
@@ -16,25 +16,34 @@ const LogIn: React.FC = () => {
     console.log('Is shown', isLogin);
   }
 
-  const handleLogin = () => {
-    if (authenticate(email, password)) {
-      navigate('/user-list');
-    } else {
-      alert('Invalid credentials');
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Simulate role based access(improve)
+    if (email === 'admin@admin' && password === 'admin') {
+      auth.isAuthenticated = true;
+      auth.user = { username: 'admin', role: 'admin' };
+      navigate('/users');
+    } 
+    else if (email === 'super@super' && password === 'super') {
+      auth.isAuthenticated = true;
+      auth.user = { username: 'super', role: 'super_user' };
+      navigate('/users');
+    }
+    else {
+      auth.isAuthenticated = true;
+      auth.user = { username: 'user', role: 'user' };
+      navigate('/users');
     }
   };
 
-  const handleRegister = () => {
-    return;
-  }
-
+  //improve frontend
   return (
     <div>
-      {isLogin ? (        
+      {isLogin ? (      
         <Container fluid>
           <Row>
             <Col md={6} className="loginBoxStyle">
-              <Form>
+              <Form onSubmit={handleLogin}>
                 <h2>Login</h2>
                 <Form.Group className="mb-3">
                   <Form.Label>Email</Form.Label>
@@ -42,7 +51,7 @@ const LogIn: React.FC = () => {
                     type="email" 
                     placeholder="name@example.com" 
                     value={email} 
-                    onChange={(e) => setEmail(e.target.value)}/>
+                    onChange={(e) => setEmail(e.target.value)} required/>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Password</Form.Label>
@@ -50,9 +59,9 @@ const LogIn: React.FC = () => {
                     type="password" 
                     placeholder="name@example.com" 
                     value={password} 
-                    onChange={(e) => setPassword(e.target.value)}/>
+                    onChange={(e) => setPassword(e.target.value)} required/>
                 </Form.Group>
-                <Button variant="primary" type="submit" className='mt-3' onClick={handleLogin}>
+                <Button variant="primary" type="submit" className='mt-3'>
                   Log In
                 </Button>
                 <Button variant="link" type="submit" className='mt-3' onClick={() => ShowLogin(false)}>
@@ -110,7 +119,7 @@ const LogIn: React.FC = () => {
                     type='radio'
                   />
                 </div>
-                <Button variant="primary" type="submit" className='mt-3' onClick={handleRegister}>
+                <Button variant="primary" type="submit" className='mt-3'>
                   Register
                 </Button>
                 <Button variant="link" type="submit" className='mt-3' onClick={() => ShowLogin(true)}>

@@ -9,6 +9,7 @@ const initialState: AuthState = {
   user: null,
 };
 
+//login
 export const AuthContext = createContext<AuthContextType>({
   auth: initialState,
   setAuth: () => {},
