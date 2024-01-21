@@ -8,6 +8,8 @@ export interface User {
   ip_address?: string;
   gender?: string;
   friends?: Friend[];
+  role?: string;
+  password? : any;
 }
   
 export interface Friend {

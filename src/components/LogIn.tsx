@@ -4,19 +4,33 @@ import { FormEvent, useContext, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../authService';
+import { User } from '../interfaces';
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const { auth, setAuth } = useContext(AuthContext); // Access auth from context
+
+  const [formData, setFormData] = useState<User>({
+    id: Date.now(),
+    first_name: '',
+    last_name: '',
+    email: '',
+    gender: '',
+    role: '',
+    password: ''
+  });
+
   const navigate = useNavigate();
 
+  // switch from log to reg
   const ShowLogin =(value: boolean)=> {
     setIsLogin(value);
     console.log('Is shown', isLogin);
   }
 
+  // cookie
   useEffect(() => {
     const userCookie = Cookies.get('userAuth');
     if (userCookie) {
@@ -27,9 +41,9 @@ const LogIn = () => {
     }
   }, [auth, navigate]);
 
-  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+  // login
+  const login = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     let user;
     if (email === 'admin@admin' && password === 'admin') {
       user = { username: 'admin', role: 'admin' };
@@ -40,15 +54,27 @@ const LogIn = () => {
     else {
       user = { username: 'user', role: 'user' };
     }
-
     // Update the auth state
     setAuth({ isAuthenticated: true, user });
-
     // Set a cookie that expires in 30 minutes
     const expires = new Date(new Date().getTime() + 30 * 60 * 1000); // 30 minutes from now
     Cookies.set('userAuth', JSON.stringify({ isAuthenticated: true, user }), { expires });
-
     navigate('/users');
+  };
+
+  // register
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target; // Destructure name and value from the event target
+    setFormData({
+      ...formData,
+      [name]: value // Use the name to set the correct state property
+    });
+  };
+
+  const register = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log('Form Data:', formData);
+    // Here you can also send formData to a backend server...
   };
 
   return (
@@ -57,9 +83,9 @@ const LogIn = () => {
         <Container fluid>
           <Row>
             <Col md={6} className="loginBoxStyle">
-              <Form onSubmit={handleLogin}>
-                <h2>Login</h2>
-                <Form.Group className="mb-3">
+              <Form onSubmit={login}>
+                <h2 className='d-flex justify-content-center'>Login</h2>
+                <Form.Group className="mb-3 mt-3">
                   <Form.Label>Email</Form.Label>
                   <Form.Control 
                     type="email" 
@@ -89,50 +115,72 @@ const LogIn = () => {
         <Container fluid>
           <Row>
             <Col md={6} className="loginBoxStyle">
-              <Form>
-                <h2>Register</h2>
+              <Form onSubmit={register}>
+                <h2 className='d-flex justify-content-center'>Register</h2>
                 <Form.Group className="mb-3">
                   <Form.Label>First Name</Form.Label>
-                  <Form.Control type="string" placeholder="name@example.com" />
+                  <Form.Control
+                    type="text"
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleChange}/>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Last Name</Form.Label>
-                  <Form.Control type="string" placeholder="name@example.com" />
+                  <Form.Control
+                    type="text"
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleChange}/>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" placeholder="name@example.com" />
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}/>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" placeholder="name@example.com" />
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}/>
                 </Form.Group>
-                <div key='inline-radio' className="mb-3">
-                  <Form.Check
-                    inline
-                    label="Male"
-                    name="group1"
-                    type='radio'
-                  />
-                  <Form.Check
-                    inline
-                    label="Female"
-                    name="group1"
-                    type='radio'
-                  />
-                  <Form.Check
-                    inline
-                    label="Other"
-                    name="group1"
-                    type='radio'
-                  />
-                  <Form.Check
-                    inline
-                    label="Don't Specify"
-                    name="group1"
-                    type='radio'
-                  />
-                </div>
+                <Form.Group>
+                  <Form.Label><b>Gender</b> </Form.Label>
+                  <div key='gender' className="mb-3">
+                    {["Male", "Female", "Other", "Don't Specify"].map((gender) => (
+                      <Form.Check 
+                      inline 
+                      key={gender}
+                      label={gender} 
+                      type="radio" 
+                      id={`gender-${gender}`}
+                      value={gender}
+                      checked={formData.gender === gender}
+                      onChange={(e) => setFormData({ ...formData, gender: e.target.value })}/>
+                    ))}
+                  </div>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label><b>Role</b></Form.Label>
+                  <div key='role' className="mb-3">
+                    {["admin", "super-user", "user"].map((role) => (
+                      <Form.Check 
+                      inline 
+                      key={role} 
+                      label={role} 
+                      type="radio" 
+                      id={`role-${role}`}
+                      value={role}
+                      checked={formData.role === role}
+                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}/>
+                    ))}
+                  </div>
+                </Form.Group>
                 <Button variant="primary" type="submit" className='mt-3'>
                   Register
                 </Button>
