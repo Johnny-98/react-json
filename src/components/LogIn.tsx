@@ -1,5 +1,4 @@
 // 'Log in' page for the authentication
-import Cookies from 'js-cookie';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,7 @@ const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
-  const { auth, setAuth } = useContext(AuthContext); // Access auth from context
+  const { setAuth } = useContext(AuthContext); // Access auth from context
 
   const [formData, setFormData] = useState<User>({
     id: Date.now(),
@@ -30,16 +29,14 @@ const LogIn = () => {
     console.log('Is shown', isLogin);
   }
 
-  // cookie
   useEffect(() => {
-    const userCookie = Cookies.get('userAuth');
-    if (userCookie) {
-      const userAuth = JSON.parse(userCookie);
-      auth.isAuthenticated = userAuth.isAuthenticated;
-      auth.user = userAuth.user;
-      navigate('/users'); // Redirect to a dashboard or home page
+    const userAuthData = localStorage.getItem('userAuth');
+    if (userAuthData) {
+      const userAuth = JSON.parse(userAuthData);
+      setAuth(userAuth); // Update auth context with stored data
+      navigate('/users'); // Redirect to users page
     }
-  }, [auth, navigate]);
+  }, [setAuth, navigate]);
 
   // login
   const login = async (e: FormEvent<HTMLFormElement>) => {
@@ -56,9 +53,7 @@ const LogIn = () => {
     }
     // Update the auth state
     setAuth({ isAuthenticated: true, user });
-    // Set a cookie that expires in 30 minutes
-    const expires = new Date(new Date().getTime() + 30 * 60 * 1000); // 30 minutes from now
-    Cookies.set('userAuth', JSON.stringify({ isAuthenticated: true, user }), { expires });
+    localStorage.setItem('userAuth', JSON.stringify({ isAuthenticated: true, user }));
     navigate('/users');
   };
 
