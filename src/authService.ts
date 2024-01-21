@@ -1,16 +1,27 @@
-// src/services/authService.ts
+// authService.ts
+import axios from 'axios';
+import { createContext } from 'react';
+import { AuthContextType, AuthState, User } from './interfaces';
 
-import { User } from './interfaces';
-const users = require('./users.json');
-
-export const authenticate = (email: string, password: string): boolean => {
-  // Implement authentication logic (e.g., check email and password against users)
-  // For simplicity, let's assume the email is the username and the password is not used in this example.
-  const user:User | undefined = users.find((u:  User) => u.email === email);
-  return !!user;
+//logout on refresh (improve)
+const initialState: AuthState = {
+  isAuthenticated: false,
+  user: null,
 };
 
-export const getUserList = (): any[] => {
-  // Mock API call to get user list
-  return users;
+export const AuthContext = createContext<AuthContextType>({
+  auth: initialState,
+  setAuth: () => {},
+});
+
+//fetch the data 
+export const fetchUsers = async (): Promise<User[]> => {
+  try {
+    // Making a mock call using axios http lib to get the json.(improve)
+    const response = await axios.get<User[]>('users.json');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
 };
