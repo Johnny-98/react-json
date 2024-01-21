@@ -1,4 +1,4 @@
-// page to list users
+// page to list usersauth_user
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext, fetchUsers } from '../authService';
@@ -6,26 +6,32 @@ import { User } from '../interfaces';
 
 const UserList = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [local_user, setLocalUser] = useState<User | null>(null);
   const { setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
-  let auth_user:any;
-  
-  // Retrieve user data from localStorage
-  const userAuthData = localStorage.getItem('userAuth');
-  if (userAuthData) {
-    try {
-      const parsedAuthData = JSON.parse(userAuthData);
-      if (parsedAuthData && parsedAuthData.user) {
-        auth_user = parsedAuthData.user; // Extract the user data
-      }
-    } catch (error) {
-      console.error('Error parsing userAuth data:', error);
-    }
-  } else {
-    setAuth({ isAuthenticated: false, user: null });
-    navigate('/login');
-  }
 
+  // Retrieve user data from localStorage
+  useEffect(() => {
+    const userAuthData = localStorage.getItem('userAuth');
+    if (userAuthData) {
+      try {
+        const parsedAuthData = JSON.parse(userAuthData);
+        if (parsedAuthData && parsedAuthData.user) {
+          setLocalUser(parsedAuthData.user); // Update state
+        }
+      } catch (error) {
+        console.error('Error parsing userAuth data:', error);
+        setAuth({ isLoggedIn: false, user: null });
+        navigate('/login');
+      }
+    } else {
+      setAuth({ isLoggedIn: false, user: null });
+      navigate('/login');
+    }
+  }, [setAuth, navigate]);
+  
+
+  //fetch json data
   useEffect(() => {
     const getUsers = async () => {
       try {
@@ -40,32 +46,38 @@ const UserList = () => {
   }, []);
 
 
-
+  //reset everything
   const handleLogout = () => {
-    // Remove specific user auth_user data from localStorage
-    // If you have other user-specific data in localStorage, remove them as well
-    localStorage.removeItem('userAuth');
+    // Retrieve the existing user data from localStorage
+    const userAuthData = localStorage.getItem('userAuth');
+    let userAuth = userAuthData ? JSON.parse(userAuthData) : {};
   
-    // Update any application state/context as necessary
-    // For example, if you have an authentication context, reset it
-    setAuth({ isAuthenticated: false, user: null });
+    // Update only the isLoggedIn flag to false
+    userAuth.isLoggedIn = false;
+  
+    // Save the updated auth data back to localStorage
+    localStorage.setItem('userAuth', JSON.stringify(userAuth));
+  
+    // Update the AuthContext
+    setAuth({ isLoggedIn: false, user: userAuth.user });
+  
+    // Navigate to the login page
     navigate('/login');
-    return <div>Please log in to view this page.</div>;
   };
 
   return (
     <div>
-      <h1>Welcome {auth_user.username}</h1>
-      <h4 className='mb-3'>role : {auth_user.role}</h4>
+      <h1>Welcome {local_user?.first_name}</h1>
+      <h4 className='mb-3'>role : {local_user?.role}</h4>
       <table className='mb-3'>
         <thead>
           <tr>
             <th>ID</th>
             <th>Username</th>
             {/*An admin and a super_user can see the email field*/}
-            {['admin', 'super_user'].includes(auth_user.role) && <th>Email</th>}
+            {local_user && ['admin', 'super_user'].includes(local_user.role) && <th>Email</th>}
             {/*Only an admin can see the ip_address*/}
-            {auth_user.role === 'admin' && <th>IP Address</th>}
+            {local_user && local_user.role === 'admin' && <th>IP Address</th>}
           </tr>
         </thead>
         <tbody>
@@ -74,8 +86,8 @@ const UserList = () => {
               <td>{user.id}</td>
               {/* All other fields are visible to all roles. */}
               <td>{`${user.first_name} ${user.last_name}`}</td>
-              {['admin', 'super_user'].includes(auth_user.role) && <td>{user.email}</td>}
-              {auth_user.role === 'admin' && <td>{user.ip_address}</td>}
+              {local_user &&  ['admin', 'super_user'].includes(local_user.role) && <td>{user.email}</td>}
+              {local_user &&  local_user.role === 'admin' && <td>{user.ip_address}</td>}
             </tr>
           ))}
         </tbody>

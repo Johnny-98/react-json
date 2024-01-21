@@ -5,7 +5,7 @@ import { AuthContextType, AuthState, User } from './interfaces';
 
 //logout on refresh (improve)
 const initialState: AuthState = {
-  isAuthenticated: false,
+  isLoggedIn: false,
   user: null,
 };
 

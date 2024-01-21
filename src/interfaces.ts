@@ -8,7 +8,7 @@ export interface User {
   ip_address?: string;
   gender?: string;
   friends?: Friend[];
-  role?: string;
+  role: string;
   password? : any;
 }
   
@@ -17,14 +17,9 @@ export interface Friend {
     name: string;
 }
 
-interface AuthUser {
-  username: string;
-  role: string;
-}
-
 export interface AuthState {
-  isAuthenticated: boolean;
-  user: AuthUser | null;
+  isLoggedIn: boolean;
+  user: User | null;
 }
 
 export interface AuthContextType {

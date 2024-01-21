@@ -10,7 +10,7 @@ import './styles/login.css';
 function App() {
 
   //improve logged in logic
-  const [auth, setAuth] = useState<AuthState>({ isAuthenticated: false, user: null });
+  const [auth, setAuth] = useState<AuthState>({ isLoggedIn: false, user: null });
 
   //improve routing
   return (
@@ -19,7 +19,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate replace to="/login" />} />
           <Route path="/login" element={<LogIn />} />
-          <Route path="/users" element={<UserList />} />
+          <Route 
+            path="/users" 
+            element={auth.isLoggedIn ? <UserList /> : <Navigate replace to="/login" />} 
+          />
           {/* add /register*/}
         </Routes>
       </Router>

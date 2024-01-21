@@ -33,27 +33,29 @@ const LogIn = () => {
     const userAuthData = localStorage.getItem('userAuth');
     if (userAuthData) {
       const userAuth = JSON.parse(userAuthData);
-      setAuth(userAuth); // Update auth context with stored data
-      navigate('/users'); // Redirect to users page
+      if (userAuth.isLoggedIn) {
+        setAuth(userAuth); // Update auth context with stored data
+        navigate('/users'); // Redirect to users page
+      }
     }
   }, [setAuth, navigate]);
 
   // login
   const login = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let user;
+    let user: any;
     if (email === 'admin@admin' && password === 'admin') {
-      user = { username: 'admin', role: 'admin' };
+      user = { id: '111', first_name: 'Admin',last_name: 'Jotaro', email: 'admin@admin',gender: 'male', role: 'admin', password: 'admin'};
     } 
     else if (email === 'super@super' && password === 'super') {
-      user = { username: 'super', role: 'super_user' };
+      user = { id: '222', first_name: 'Super',last_name: 'Dio', email: 'super@super',gender: 'other', role: 'super_user', password: 'super'};
     }
-    else {
-      user = { username: 'user', role: 'user' };
-    }
+    // else {
+    //   user = { username: 'user', role: 'user' };
+    // }
     // Update the auth state
-    setAuth({ isAuthenticated: true, user });
-    localStorage.setItem('userAuth', JSON.stringify({ isAuthenticated: true, user }));
+    setAuth({ isLoggedIn: true, user });
+    localStorage.setItem('userAuth', JSON.stringify({ isLoggedIn: true, user }));
     navigate('/users');
   };
 
