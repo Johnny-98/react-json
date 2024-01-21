@@ -1,5 +1,6 @@
 // 'Log in' page for the authentication
-import React, { FormEvent, useContext, useState } from 'react';
+import Cookies from 'js-cookie';
+import { FormEvent, useContext, useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../authService';
@@ -8,7 +9,7 @@ const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
-  const { auth } = useContext(AuthContext); // Access auth from context
+  const { auth, setAuth } = useContext(AuthContext); // Access auth from context
   const navigate = useNavigate();
 
   const ShowLogin =(value: boolean)=> {
@@ -16,27 +17,40 @@ const LogIn = () => {
     console.log('Is shown', isLogin);
   }
 
+  useEffect(() => {
+    const userCookie = Cookies.get('userAuth');
+    if (userCookie) {
+      const userAuth = JSON.parse(userCookie);
+      auth.isAuthenticated = userAuth.isAuthenticated;
+      auth.user = userAuth.user;
+      navigate('/users'); // Redirect to a dashboard or home page
+    }
+  }, [auth, navigate]);
+
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Simulate role based access(improve)
+
+    let user;
     if (email === 'admin@admin' && password === 'admin') {
-      auth.isAuthenticated = true;
-      auth.user = { username: 'admin', role: 'admin' };
-      navigate('/users');
+      user = { username: 'admin', role: 'admin' };
     } 
     else if (email === 'super@super' && password === 'super') {
-      auth.isAuthenticated = true;
-      auth.user = { username: 'super', role: 'super_user' };
-      navigate('/users');
+      user = { username: 'super', role: 'super_user' };
     }
     else {
-      auth.isAuthenticated = true;
-      auth.user = { username: 'user', role: 'user' };
-      navigate('/users');
+      user = { username: 'user', role: 'user' };
     }
+
+    // Update the auth state
+    setAuth({ isAuthenticated: true, user });
+
+    // Set a cookie that expires in 30 minutes
+    const expires = new Date(new Date().getTime() + 30 * 60 * 1000); // 30 minutes from now
+    Cookies.set('userAuth', JSON.stringify({ isAuthenticated: true, user }), { expires });
+
+    navigate('/users');
   };
 
-  //improve frontend
   return (
     <div>
       {isLogin ? (      

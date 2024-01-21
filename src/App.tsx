@@ -1,5 +1,5 @@
 // App.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthContext } from './authService';
 import LogIn from './components/LogIn';
