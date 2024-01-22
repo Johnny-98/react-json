@@ -71,18 +71,11 @@ const App: React.FC = () => {
                 <Container className="mt-4 chat-window">
                     <Card>
                         <Card.Header className='chat-header d-flex justify-content-between align-items-center'>
-                            <h5>Welcome {loginMessage || ('back ' + userData.name + '!')}</h5>
+                            <h5>Welcome {loginMessage || ('back user ' + userData.name + '!')} ({userData.role})</h5>
                             <Button className='logout-button' variant="success" onClick={logout}><b>Log out</b></Button>
                         </Card.Header>
                     </Card>
                     <UserList userData={userData}/>
-                    {/* Display userData here */}
-                    <div className="user-data">
-                        <h5>User Data</h5>
-                        <p>Name: {userData.name}</p>
-                        <p>Password: {userData.password}</p>
-                        <p>Role: {userData.role}</p>
-                    </div>
                 </Container>
             )}
         </div>
