@@ -3,18 +3,6 @@ import axios from 'axios';
 import { createContext } from 'react';
 import { AuthContextType, AuthState, User } from './interfaces';
 
-//logout on refresh (improve)
-const initialState: AuthState = {
-  isLoggedIn: false,
-  user: null,
-};
-
-//login
-export const AuthContext = createContext<AuthContextType>({
-  auth: initialState,
-  setAuth: () => {},
-});
-
 //fetch the data 
 export const fetchUsers = async (): Promise<User[]> => {
   try {

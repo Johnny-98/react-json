@@ -1,7 +1,7 @@
 // page to list usersauth_user
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext, fetchUsers } from '../authService';
+import { fetchUsers } from '../authService';
 import { User } from '../interfaces';
 
 const UserList = () => {
