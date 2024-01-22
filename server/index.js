@@ -22,8 +22,8 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     socket.on("log_in", (data) => {
-        console.log('Received login data:', data); // Add this line
-        const { name, password } = data;
+        console.log('Received login data:', data);
+        const { name, password, role } = data;
 
         // Check if user with this username exists
         const user = users.find((user) => user.name === name);
@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
         } else {
             // Hash the password and store the user object
             const hashedPassword = bcrypt.hashSync(password, 10);
-            users.push({ name, password: hashedPassword });
+            users.push({ name, password: hashedPassword, role });
 
             socket.emit('logged_in', `Welcome ${name}!`);
         }

@@ -44,6 +44,23 @@ const LoginRegister: React.FC<LoginRegisterProps> = ({ isLogin, userData, setUse
                                         onChange={handleChange}
                                     />
                                 </Form.Group>
+                                <Form.Group>
+                                  <Form.Label><b>Role</b></Form.Label>
+                                  <div key='role' className="mb-3">
+                                    {["admin", "super-user", "user"].map((role) => (
+                                      <Form.Check 
+                                        inline 
+                                        key={role} 
+                                        label={role} 
+                                        type="radio" 
+                                        id={`role-${role}`}
+                                        value={role}
+                                        checked={userData.role === role} // Check if userData.role matches the current role
+                                        onChange={() => setUserData({ ...userData, role })} // Update userData.role on change
+                                      />
+                                    ))}
+                                  </div>
+                                </Form.Group>
                                 <Button variant="primary" type="submit" className='mt-3'> Login </Button>
                                 <Button variant="link" type="submit" className='mt-3' onClick={() => ShowLogin(false)}>
                     <b>Register</b>

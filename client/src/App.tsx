@@ -11,7 +11,8 @@ const App: React.FC = () => {
     const socket: Socket = io.connect('http://localhost:3001');
     const [userData, setUserData] = useState<any>({
         name: '',
-        password: ''
+        password: '',
+        role: ''
     });
     const [loginMessage, setLoginMessage] = useState('');
     const [showTable, setShowTable] = useState(false);
@@ -25,7 +26,7 @@ const App: React.FC = () => {
     const login = (event:  FormEvent<HTMLFormElement>) => {
       event.preventDefault(); // Prevent page reload
       console.log('userData:', userData);
-      if (userData.name !== '' && userData.password !== '') {
+      if (userData.name !== '' && userData.password !== '' && userData.role !=='') {
           socket.emit('log_in', userData);
           localStorage.setItem('userData', JSON.stringify(userData));
           setShowTable(true); // Set showTable to true upon successful login
@@ -38,7 +39,7 @@ const App: React.FC = () => {
     socket.emit('log_out', userData.name);
 
     // Clear user data and showTable state
-    setUserData({ name: '', password: '' });
+    setUserData({ name: '', password: '', role:'' });
     setShowTable(false);
 
     // Remove user data from local storage
@@ -74,12 +75,13 @@ const App: React.FC = () => {
                             <Button className='logout-button' variant="success" onClick={logout}><b>Log out</b></Button>
                         </Card.Header>
                     </Card>
-                    <UserList />
+                    <UserList userData={userData}/>
                     {/* Display userData here */}
                     <div className="user-data">
                         <h5>User Data</h5>
                         <p>Name: {userData.name}</p>
                         <p>Password: {userData.password}</p>
+                        <p>Role: {userData.role}</p>
                     </div>
                 </Container>
             )}
