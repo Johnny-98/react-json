@@ -13,7 +13,7 @@ const App: React.FC = () => {
     const [userData, setUserData] = useState<any>({
         first_name: '',
         last_name: '',
-        email:'',
+        email: '',
         password: '',
         gender: '',
         role: '',
@@ -45,7 +45,7 @@ const App: React.FC = () => {
         }
     };
 
-    const register = (event:  FormEvent<HTMLFormElement>) => {
+    const register = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault(); // Prevent page reload
         const notEmpty = (fieldValue: any) => !!fieldValue;
         let fieldsFilled = true;
@@ -57,12 +57,25 @@ const App: React.FC = () => {
                 break; // Break the loop if any field is empty
             }
         }
+
         if (fieldsFilled) {
             socket.emit('register', userData);
-            localStorage.setItem('userData', JSON.stringify(userData));
-            setShowTable(true); // Set showTable to true upon successful register
+
+            socket.on('registration_response', (message, newUser) => {
+                if (message === 'User exists') {
+                    alert('User with the same information already exists.');
+                } 
+                else if (message === 'Email exists'){
+                    alert('Email already used.');
+                }
+                else {
+                    setUserData(newUser); // Update user data in the state
+                    setShowTable(true); // Set showTable to true upon successful register
+                    localStorage.setItem('isLoggedIn', 'true');
+                }
+            });
         } else {
-            alert('Please fill out the fields');
+            alert('Please fill out all fields');
         }
     };
 

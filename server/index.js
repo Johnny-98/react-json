@@ -21,35 +21,41 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    socket.on("register", (data) => {  
-        console.log('Received user data:', data); 
-        // Check if user with this name exists
-        const userIndex = users.findIndex((user) => user.first_name === data.first_name);
+    socket.on("register", (data) => {
+        console.log('Received user data:', data);
 
-        if (userIndex !== -1) {
-            // User exists, check password
-            if (bcrypt.compareSync(data.password, users[userIndex].password)) {
-                socket.emit('logged_in', `Welcome back ${data.first_name}!`);
-            } else {
-                socket.emit('logged_in', 'Invalid password.');
-            }
+        // Define the fields to compare and assign
+        const fieldsToCompare = ['first_name', 'last_name','gender', 'role'];
+
+        // Check if a user with the same values in all input fields already exists
+        const existingUser = users.find((user) => {
+            return fieldsToCompare.every((field) => user[field] === data[field]);
+        });
+    
+        // Check if a user with the same email already exists
+        const existingEmail = users.find((user) => user.email === data.email);
+    
+        if (existingUser && existingUser) {
+            socket.emit('registration_response', 'User exists');
+        } else if (existingEmail) {
+            socket.emit('registration_response', 'Email exists');
         } else {
             // New user, hash the password
             const hashedPassword = bcrypt.hashSync(data.password, 10);
-
+    
             // Create a new user object with hashed password and other data
-            const newUser = { ...data, password: hashedPassword };
-
+            const newUser = { password: hashedPassword, ...data };
+    
             // Add the new user to the array
             users.push(newUser);
-
-            socket.emit('logged_in', `Welcome ${data.first_name}!`);
+    
+            // Emit a success message and the new user's data
+            socket.emit('registration_response', `Welcome ${data.first_name}!`, newUser);
+    
+            // Whenever users array changes, emit 'users_update'
+            io.emit('users_update', users.map((user) => user.first_name));
         }
-
-        // Whenever users array changes, emit 'users_update'
-        io.emit('users_update', users.map((user) => user.first_name));
     });
-
     socket.on("log_in", (data) => {
         const userIndex = users.findIndex((user) => user.email === data.email);
     
