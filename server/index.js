@@ -21,30 +21,32 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    socket.on("log_in", (data) => {
-        console.log('Received login data:', data);
-        const { name, password, role } = data;
+    socket.on("log_in", (data) => {   
+        // Check if user with this name exists
+        const userIndex = users.findIndex((user) => user.first_name === data.first_name);
 
-        // Check if user with this username exists
-        const user = users.find((user) => user.name === name);
-
-        if (user) {
-            // Check if the provided password matches the stored hashed password
-            if (bcrypt.compareSync(password, user.password)) {
-                socket.emit('logged_in', `Welcome back ${name}!`);
+        if (userIndex !== -1) {
+            // User exists, check password
+            if (bcrypt.compareSync(data.password, users[userIndex].password)) {
+                socket.emit('logged_in', `Welcome back ${data.first_name}!`);
             } else {
                 socket.emit('logged_in', 'Invalid password.');
             }
         } else {
-            // Hash the password and store the user object
-            const hashedPassword = bcrypt.hashSync(password, 10);
-            users.push({ name, password: hashedPassword, role });
+            // New user, hash the password
+            const hashedPassword = bcrypt.hashSync(data.password, 10);
 
-            socket.emit('logged_in', `Welcome ${name}!`);
+            // Create a new user object with hashed password and other data
+            const newUser = { ...data, password: hashedPassword };
+
+            // Add the new user to the array
+            users.push(newUser);
+
+            socket.emit('logged_in', `Welcome ${data.first_name}!`);
         }
 
         // Whenever users array changes, emit 'users_update'
-        io.emit('users_update', users.map((user) => user.name));
+        io.emit('users_update', users.map((user) => user.first_name));
     });
 
     socket.on("log_out", (data) => {
