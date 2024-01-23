@@ -3,13 +3,14 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 
 interface LoginRegisterProps {
     isLogin: boolean;
+    ShowLogin: (value: boolean) => void;
     userData: any;
     setUserData: (userData: any) => void;
+    login: (event: FormEvent<HTMLFormElement>) => void;
     register: (event: FormEvent<HTMLFormElement>) => void;
-    ShowLogin: (value: boolean) => void;
 }
 
-const LoginRegister: React.FC<LoginRegisterProps> = ({ isLogin, userData, setUserData, register, ShowLogin }) => {
+const LoginRegister: React.FC<LoginRegisterProps> = ({ isLogin, ShowLogin, userData, setUserData, login, register }) => {
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -33,8 +34,7 @@ const LoginRegister: React.FC<LoginRegisterProps> = ({ isLogin, userData, setUse
                                       type="text"
                                       name="first_name"
                                       value={userData.first_name}
-                                      onChange={handleChange}
-                                  />
+                                      onChange={handleChange}/>
                                 </Form.Group>
                                 <Form.Group className="mb-3">
                                   <Form.Label>Last Name</Form.Label>
@@ -104,36 +104,36 @@ const LoginRegister: React.FC<LoginRegisterProps> = ({ isLogin, userData, setUse
                 </Container>
             ) : (
               <Container fluid>
-            <Row>
-              <Col md={6} className="loginBoxStyle">
-                <Form>
-                  <h2 className='d-flex justify-content-center'>Login</h2>
-
-                  <Form.Group className="mb-3">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                      type="email"
-                      name="email"
-                      onChange={handleChange}/>
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name="password"
-
-                      onChange={handleChange}/>
-                  </Form.Group>
-                  <Button variant="primary" type="submit" className='mt-3'>
-                    Log In
-                  </Button>
-                  <Button variant="link" type="submit" className='mt-3' onClick={() => ShowLogin(true)}>
-                    <b>Register</b>
-                  </Button>
-                </Form>
-              </Col>
-            </Row>
-          </Container>
+                <Row>
+                  <Col md={6} className="loginBoxStyle">
+                    <Form onSubmit={login}>
+                      <h2 className='d-flex justify-content-center'>Login</h2>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control
+                          type="email"
+                          name="email"
+                          value={userData.email}
+                          onChange={handleChange}/>
+                      </Form.Group>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                          type="password"
+                          name="password"
+                          value={userData.password}
+                          onChange={handleChange}/>
+                      </Form.Group>
+                      <Button variant="primary" type="submit" className='mt-3'>
+                        Log In
+                      </Button>
+                      <Button variant="link" type="submit" className='mt-3' onClick={() => ShowLogin(true)}>
+                        <b>Register</b>
+                      </Button>
+                    </Form>
+                  </Col>
+                </Row>
+              </Container>
             )}
         </div>
     );

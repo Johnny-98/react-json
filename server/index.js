@@ -21,7 +21,8 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    socket.on("log_in", (data) => {   
+    socket.on("register", (data) => {  
+        console.log('Received user data:', data); 
         // Check if user with this name exists
         const userIndex = users.findIndex((user) => user.first_name === data.first_name);
 
@@ -49,12 +50,18 @@ io.on('connection', (socket) => {
         io.emit('users_update', users.map((user) => user.first_name));
     });
 
-    socket.on("log_out", (data) => {
-        // Log out logic
-    });
-
-    socket.on("disconnect", () => {
-        // Disconnect logic
+    socket.on("log_in", (data) => {
+        const userIndex = users.findIndex((user) => user.email === data.email);
+    
+        if (userIndex !== -1) {
+            if (bcrypt.compareSync(data.password, users[userIndex].password)) {
+                socket.emit('login_response', 'Success', users[userIndex]);
+            } else {
+                socket.emit('login_response', 'Invalid password.');
+            }
+        } else {
+            socket.emit('login_response', 'User not found.');
+        }
     });
 });
 
