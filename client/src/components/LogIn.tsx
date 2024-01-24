@@ -20,7 +20,7 @@ const LogIn: React.FC<LogInProps> = ({ isLogin, userData, setUserData, login, re
     };
 
     return (
-        <div>
+        <div className='login-background'>
             {isLogin ? (
                 <Container fluid>
                     <Row>
@@ -45,12 +45,10 @@ const LogIn: React.FC<LogInProps> = ({ isLogin, userData, setUserData, login, re
                                         onChange={handleChange}
                                     />
                                 </Form.Group>
-                                <Button variant="primary" type="submit" className='mt-3'>
-                                    Log In
-                                </Button>
-                                <Button variant="link" type="button" className='mt-3' onClick={() => ShowLogin(false)}>
-                                    <b>Register</b>
-                                </Button>
+                                <div className="d-flex justify-content-between">
+                                    <div className="btn-container btn-left"><button>Log In</button></div>
+                                    <div className="btn-container btn-right"><button onClick={() => ShowLogin(false)}>Register</button></div>
+                                </div>
                             </Form>
                         </Col>
                     </Row>
@@ -131,15 +129,16 @@ const LogIn: React.FC<LogInProps> = ({ isLogin, userData, setUserData, login, re
                                         ))}
                                     </div>
                                 </Form.Group>
-                                <Button variant="primary" type="submit" className='mt-3'> Register </Button>
-                                <Button variant="link" type="button" className='mt-3' onClick={() => ShowLogin(true)}>
-                                    <b>Login</b>
-                                </Button>
+                                <div className="d-flex justify-content-between">
+                                    <div className="btn-container btn-left"><button>Register</button></div>
+                                    <div className="btn-container btn-right"><button onClick={() => ShowLogin(true)}>Login</button></div>
+                                </div>
                             </Form>
                         </Col>
                     </Row>
                 </Container>
             )}
+            <div className='app-background'/>
         </div>
     );
 };

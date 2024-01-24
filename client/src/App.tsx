@@ -7,6 +7,7 @@ import UserList from './components/UserList';
 import { User } from './interfaces';
 import './styles/App.css';
 import './styles/login.css';
+import './styles/users.css';
 
 const initialLoginUserData = {
     email: '',
@@ -125,14 +126,17 @@ const App: React.FC = () => {
     return (
         <div>
             {!showTable ? (
-                <LogIn
-                    isLogin={isLogin}
-                    userData={isLogin ? loginUserData : registerUserData}
-                    setUserData={isLogin ? setLoginUserData : setRegisterUserData}
-                    login={login}
-                    register={register}
-                    ShowLogin={ShowLogin}
-                />
+                <div style={{ backgroundColor: 'black', minHeight: '100vh' }}>
+
+                    <LogIn
+                        isLogin={isLogin}
+                        userData={isLogin ? loginUserData : registerUserData}
+                        setUserData={isLogin ? setLoginUserData : setRegisterUserData}
+                        login={login}
+                        register={register}
+                        ShowLogin={ShowLogin}
+                    />
+                </div>
             ) : (
                 <Container className="mt-4 chat-window">
                     <Card>
@@ -144,11 +148,11 @@ const App: React.FC = () => {
                         </Card.Header>
                     </Card>
                     <UserList userData={loginUserData} />
-                    <div>Email: {loginUserData.email}</div>
+                    {/* <div>Email: {loginUserData.email}</div>
                     <div>Password: {loginUserData.password}</div>
                     <div>Gender: {loginUserData.gender}</div>
                     <div></div>
-                    <div></div>
+                    <div></div> */}
                 </Container>
             )}
         </div>
