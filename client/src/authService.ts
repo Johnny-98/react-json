@@ -1,7 +1,6 @@
 // authService.ts
 import axios from 'axios';
-import { createContext } from 'react';
-import { AuthContextType, AuthState, User } from './interfaces';
+import { User } from './interfaces';
 
 //fetch the data 
 export const fetchUsers = async (): Promise<User[]> => {

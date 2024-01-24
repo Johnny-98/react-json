@@ -4,7 +4,7 @@ import { fetchUsers } from '../authService';
 import { User } from '../interfaces';
 
 interface UserListProps {
-  userData: any
+  userData: User
 }
 
 const UserList: React.FC<UserListProps> = ({ userData }) => {
