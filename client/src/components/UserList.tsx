@@ -1,10 +1,5 @@
 // page to list usersauth_user
 import { useEffect, useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import { fetchUsers } from '../authService';
 import { User } from '../interfaces';
 
@@ -38,8 +33,8 @@ const UserList: React.FC<UserListProps> = ({ userData }) => {
                     <tr>
                     <th scope="col">ID</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">IP</th>
+                        {userData && ['admin', 'super-user'].includes(userData.role) &&<th scope="col">Email</th>}
+                        {userData && ['admin'].includes(userData.role) &&<th scope="col">IP Address</th>}
                         <th scope="col">Frieds</th>
                     </tr>
                 </thead>

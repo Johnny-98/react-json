@@ -37,8 +37,6 @@ const App: React.FC = () => {
     // Separate userData states for Register and Login forms
     const [loginUserData, setLoginUserData] = useState<any>(initialLoginUserData)
     const [registerUserData, setRegisterUserData] = useState<any>(initialRegisterUserData)
-
-    const [loginMessage] = useState('');
     const [showTable, setShowTable] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
 
@@ -139,20 +137,14 @@ const App: React.FC = () => {
                 </div>
             ) : (
                 <Container className="mt-4 chat-window">
-                    <Card>
-                        <Card.Header className='chat-header d-flex justify-content-between align-items-center'>
-                            <h5>
-                                Welcome {loginMessage || ('back ' + loginUserData.first_name + ' ' + loginUserData.last_name + '!')} ({loginUserData.role})
-                            </h5>
-                            <Button className='logout-button' variant="success" onClick={logout}><b>Log out</b></Button>
-                        </Card.Header>
-                    </Card>
+                    <div  className='chat-header d-flex justify-content-between align-items-center'>
+                        <h3>
+                            Welcome <span className="hero glitch layers" data-text={loginUserData.role}><span>{loginUserData.role}</span></span> {' ' + loginUserData.first_name + ' ' + loginUserData.last_name + '!'}  
+                        </h3>
+                        <div className="btn-container btn-left"><button onClick={logout}>LogOut</button></div>
+                    </div>
                     <UserList userData={loginUserData} />
-                    {/* <div>Email: {loginUserData.email}</div>
-                    <div>Password: {loginUserData.password}</div>
-                    <div>Gender: {loginUserData.gender}</div>
-                    <div></div>
-                    <div></div> */}
+               
                 </Container>
             )}
         </div>

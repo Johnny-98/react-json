@@ -1,10 +1,12 @@
 body {
     background-color: #d9ecf2;
     font-family: 'Poppins', sans-serif;
-    color: #666
 }
 
 .data-table {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 5% 100%, 0 85%);
+
+
     th {
         text-align: center;
     }
